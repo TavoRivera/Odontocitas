@@ -10,6 +10,17 @@
       "layer": {
         "app/admin/page": "action-browser"
       }
+    },
+    "7018d9869b4a2f519887266d75ec1bb8bdbc1b7cbf": {
+      "workers": {
+        "app/offers/[id]/page": {
+          "moduleId": "[project]/.next-internal/server/app/offers/[id]/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/lib/email.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false
+        }
+      },
+      "layer": {
+        "app/offers/[id]/page": "action-browser"
+      }
     }
   },
   "edge": {},
