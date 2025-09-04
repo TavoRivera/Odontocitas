@@ -700,7 +700,9 @@ var { g: global, __dirname } = __turbopack_context__;
 __turbopack_context__.s({
     "addAppointment": (()=>addAppointment),
     "addOffer": (()=>addOffer),
+    "addStudent": (()=>addStudent),
     "deleteOffer": (()=>deleteOffer),
+    "deleteStudent": (()=>deleteStudent),
     "getAppointmentsByStudentId": (()=>getAppointmentsByStudentId),
     "getOfferById": (()=>getOfferById),
     "getOffers": (()=>getOffers),
@@ -712,6 +714,7 @@ __turbopack_context__.s({
     "getUserByStudentId": (()=>getUserByStudentId),
     "getUserByUsername": (()=>getUserByUsername),
     "updateOffer": (()=>updateOffer),
+    "updateStudentStatus": (()=>updateStudentStatus),
     "users": (()=>users)
 });
 const users = [
@@ -1048,6 +1051,63 @@ const deleteOffer = (offerId)=>{
         if (student) {
             student.offers = student.offers.filter((o)=>o.id !== offerId);
         }
+        return true;
+    }
+    return false;
+};
+const addStudent = (studentData)=>{
+    const newStudentId = String(Date.now());
+    const newUserId = `user-${newStudentId}`;
+    // Create new user
+    const newUser = {
+        id: newUserId,
+        username: studentData.name,
+        studentId: newStudentId
+    };
+    users.push(newUser);
+    // Create new student with pending status
+    const newStudent = {
+        ...studentData,
+        id: newStudentId,
+        userId: newUserId,
+        rating: 0,
+        status: 'pending',
+        reviews: [],
+        offers: []
+    };
+    students.push(newStudent);
+    return newStudent;
+};
+const updateStudentStatus = (studentId, status)=>{
+    const student = students.find((s)=>s.id === studentId);
+    if (student) {
+        student.status = status;
+        return student;
+    }
+    return null;
+};
+const deleteStudent = (studentId)=>{
+    const studentIndex = students.findIndex((s)=>s.id === studentId);
+    if (studentIndex > -1) {
+        const student = students[studentIndex];
+        // Remove student
+        students.splice(studentIndex, 1);
+        // Remove associated user
+        const userIndex = users.findIndex((u)=>u.studentId === studentId);
+        if (userIndex > -1) {
+            users.splice(userIndex, 1);
+        }
+        // Remove associated offers
+        const studentOffers = offers.filter((o)=>o.studentId === studentId);
+        studentOffers.forEach((offer)=>{
+            deleteOffer(offer.id);
+        });
+        // Remove associated reviews
+        const reviewIndicesToRemove = reviews.map((review, index)=>review.studentId === studentId ? index : -1).filter((index)=>index !== -1);
+        // Remove reviews in reverse order to maintain indices
+        reviewIndicesToRemove.reverse().forEach((index)=>{
+            reviews.splice(index, 1);
+        });
         return true;
     }
     return false;

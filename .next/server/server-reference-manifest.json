@@ -1,5 +1,17 @@
 {
-  "node": {},
+  "node": {
+    "60caaa094da8857667b4be25c52a92f2763b27cb71": {
+      "workers": {
+        "app/admin/page": {
+          "moduleId": "[project]/.next-internal/server/app/admin/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/lib/email.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false
+        }
+      },
+      "layer": {
+        "app/admin/page": "action-browser"
+      }
+    }
+  },
   "edge": {},
   "encryptionKey": "LqI8SvjHA6r+3HqGhDPUN6WLuLR6iuHQ+FWttiekYhU="
 }

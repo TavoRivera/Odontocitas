@@ -1,6 +1,6 @@
 {
   "node": {
-    "60c63ba7ea295970b3c15e16bd4ca2fcc3bce26f9f": {
+    "60caaa094da8857667b4be25c52a92f2763b27cb71": {
       "workers": {
         "app/admin/page": {
           "moduleId": "[project]/.next-internal/server/app/admin/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/lib/email.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",

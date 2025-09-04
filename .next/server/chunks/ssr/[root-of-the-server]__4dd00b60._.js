@@ -112,7 +112,9 @@ var { g: global, __dirname } = __turbopack_context__;
 __turbopack_context__.s({
     "addAppointment": (()=>addAppointment),
     "addOffer": (()=>addOffer),
+    "addStudent": (()=>addStudent),
     "deleteOffer": (()=>deleteOffer),
+    "deleteStudent": (()=>deleteStudent),
     "getAppointmentsByStudentId": (()=>getAppointmentsByStudentId),
     "getOfferById": (()=>getOfferById),
     "getOffers": (()=>getOffers),
@@ -124,6 +126,7 @@ __turbopack_context__.s({
     "getUserByStudentId": (()=>getUserByStudentId),
     "getUserByUsername": (()=>getUserByUsername),
     "updateOffer": (()=>updateOffer),
+    "updateStudentStatus": (()=>updateStudentStatus),
     "users": (()=>users)
 });
 const users = [
@@ -464,6 +467,63 @@ const deleteOffer = (offerId)=>{
     }
     return false;
 };
+const addStudent = (studentData)=>{
+    const newStudentId = String(Date.now());
+    const newUserId = `user-${newStudentId}`;
+    // Create new user
+    const newUser = {
+        id: newUserId,
+        username: studentData.name,
+        studentId: newStudentId
+    };
+    users.push(newUser);
+    // Create new student with pending status
+    const newStudent = {
+        ...studentData,
+        id: newStudentId,
+        userId: newUserId,
+        rating: 0,
+        status: 'pending',
+        reviews: [],
+        offers: []
+    };
+    students.push(newStudent);
+    return newStudent;
+};
+const updateStudentStatus = (studentId, status)=>{
+    const student = students.find((s)=>s.id === studentId);
+    if (student) {
+        student.status = status;
+        return student;
+    }
+    return null;
+};
+const deleteStudent = (studentId)=>{
+    const studentIndex = students.findIndex((s)=>s.id === studentId);
+    if (studentIndex > -1) {
+        const student = students[studentIndex];
+        // Remove student
+        students.splice(studentIndex, 1);
+        // Remove associated user
+        const userIndex = users.findIndex((u)=>u.studentId === studentId);
+        if (userIndex > -1) {
+            users.splice(userIndex, 1);
+        }
+        // Remove associated offers
+        const studentOffers = offers.filter((o)=>o.studentId === studentId);
+        studentOffers.forEach((offer)=>{
+            deleteOffer(offer.id);
+        });
+        // Remove associated reviews
+        const reviewIndicesToRemove = reviews.map((review, index)=>review.studentId === studentId ? index : -1).filter((index)=>index !== -1);
+        // Remove reviews in reverse order to maintain indices
+        reviewIndicesToRemove.reverse().forEach((index)=>{
+            reviews.splice(index, 1);
+        });
+        return true;
+    }
+    return false;
+};
 }}),
 "[project]/src/lib/email.ts [app-rsc] (ecmascript)": ((__turbopack_context__) => {
 "use strict";
@@ -471,7 +531,7 @@ const deleteOffer = (offerId)=>{
 var { g: global, __dirname } = __turbopack_context__;
 {
 // src/lib/email.ts
-/* __next_internal_action_entry_do_not_use__ [{"60c63ba7ea295970b3c15e16bd4ca2fcc3bce26f9f":"sendProfileApprovedEmail","7018d9869b4a2f519887266d75ec1bb8bdbc1b7cbf":"sendNewAppointmentEmail"},"",""] */ __turbopack_context__.s({
+/* __next_internal_action_entry_do_not_use__ [{"60caaa094da8857667b4be25c52a92f2763b27cb71":"sendProfileApprovedEmail","702a34f26ff7fb23cebffdc60ff1576e5cf9d8c89d":"sendNewAppointmentEmail"},"",""] */ __turbopack_context__.s({
     "sendNewAppointmentEmail": (()=>sendNewAppointmentEmail),
     "sendProfileApprovedEmail": (()=>sendProfileApprovedEmail)
 });
@@ -570,8 +630,8 @@ async function sendNewAppointmentEmail(student, appointment, offer) {
     sendProfileApprovedEmail,
     sendNewAppointmentEmail
 ]);
-(0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$webpack$2f$loaders$2f$next$2d$flight$2d$loader$2f$server$2d$reference$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["registerServerReference"])(sendProfileApprovedEmail, "60c63ba7ea295970b3c15e16bd4ca2fcc3bce26f9f", null);
-(0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$webpack$2f$loaders$2f$next$2d$flight$2d$loader$2f$server$2d$reference$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["registerServerReference"])(sendNewAppointmentEmail, "7018d9869b4a2f519887266d75ec1bb8bdbc1b7cbf", null);
+(0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$webpack$2f$loaders$2f$next$2d$flight$2d$loader$2f$server$2d$reference$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["registerServerReference"])(sendProfileApprovedEmail, "60caaa094da8857667b4be25c52a92f2763b27cb71", null);
+(0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$webpack$2f$loaders$2f$next$2d$flight$2d$loader$2f$server$2d$reference$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["registerServerReference"])(sendNewAppointmentEmail, "702a34f26ff7fb23cebffdc60ff1576e5cf9d8c89d", null);
 }}),
 "[project]/.next-internal/server/app/admin/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/lib/email.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript) <locals>": ((__turbopack_context__) => {
 "use strict";
@@ -597,7 +657,7 @@ var __TURBOPACK__imported__module__$5b$project$5d2f2e$next$2d$internal$2f$server
 var { g: global, __dirname } = __turbopack_context__;
 {
 __turbopack_context__.s({
-    "60c63ba7ea295970b3c15e16bd4ca2fcc3bce26f9f": (()=>__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$email$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["sendProfileApprovedEmail"])
+    "60caaa094da8857667b4be25c52a92f2763b27cb71": (()=>__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$email$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["sendProfileApprovedEmail"])
 });
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$email$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/lib/email.ts [app-rsc] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f2e$next$2d$internal$2f$server$2f$app$2f$admin$2f$page$2f$actions$2e$js__$7b$__ACTIONS_MODULE0__$3d3e$__$225b$project$5d2f$src$2f$lib$2f$email$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$2922$__$7d$__$5b$app$2d$rsc$5d$__$28$server__actions__loader$2c$__ecmascript$29$__$3c$locals$3e$__ = __turbopack_context__.i('[project]/.next-internal/server/app/admin/page/actions.js { ACTIONS_MODULE0 => "[project]/src/lib/email.ts [app-rsc] (ecmascript)" } [app-rsc] (server actions loader, ecmascript) <locals>');
@@ -608,7 +668,7 @@ var __TURBOPACK__imported__module__$5b$project$5d2f2e$next$2d$internal$2f$server
 var { g: global, __dirname } = __turbopack_context__;
 {
 __turbopack_context__.s({
-    "60c63ba7ea295970b3c15e16bd4ca2fcc3bce26f9f": (()=>__TURBOPACK__imported__module__$5b$project$5d2f2e$next$2d$internal$2f$server$2f$app$2f$admin$2f$page$2f$actions$2e$js__$7b$__ACTIONS_MODULE0__$3d3e$__$225b$project$5d2f$src$2f$lib$2f$email$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$2922$__$7d$__$5b$app$2d$rsc$5d$__$28$server__actions__loader$2c$__ecmascript$29$__$3c$exports$3e$__["60c63ba7ea295970b3c15e16bd4ca2fcc3bce26f9f"])
+    "60caaa094da8857667b4be25c52a92f2763b27cb71": (()=>__TURBOPACK__imported__module__$5b$project$5d2f2e$next$2d$internal$2f$server$2f$app$2f$admin$2f$page$2f$actions$2e$js__$7b$__ACTIONS_MODULE0__$3d3e$__$225b$project$5d2f$src$2f$lib$2f$email$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$2922$__$7d$__$5b$app$2d$rsc$5d$__$28$server__actions__loader$2c$__ecmascript$29$__$3c$exports$3e$__["60caaa094da8857667b4be25c52a92f2763b27cb71"])
 });
 var __TURBOPACK__imported__module__$5b$project$5d2f2e$next$2d$internal$2f$server$2f$app$2f$admin$2f$page$2f$actions$2e$js__$7b$__ACTIONS_MODULE0__$3d3e$__$225b$project$5d2f$src$2f$lib$2f$email$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$2922$__$7d$__$5b$app$2d$rsc$5d$__$28$server__actions__loader$2c$__ecmascript$29$__$3c$module__evaluation$3e$__ = __turbopack_context__.i('[project]/.next-internal/server/app/admin/page/actions.js { ACTIONS_MODULE0 => "[project]/src/lib/email.ts [app-rsc] (ecmascript)" } [app-rsc] (server actions loader, ecmascript) <module evaluation>');
 var __TURBOPACK__imported__module__$5b$project$5d2f2e$next$2d$internal$2f$server$2f$app$2f$admin$2f$page$2f$actions$2e$js__$7b$__ACTIONS_MODULE0__$3d3e$__$225b$project$5d2f$src$2f$lib$2f$email$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$2922$__$7d$__$5b$app$2d$rsc$5d$__$28$server__actions__loader$2c$__ecmascript$29$__$3c$exports$3e$__ = __turbopack_context__.i('[project]/.next-internal/server/app/admin/page/actions.js { ACTIONS_MODULE0 => "[project]/src/lib/email.ts [app-rsc] (ecmascript)" } [app-rsc] (server actions loader, ecmascript) <exports>');
