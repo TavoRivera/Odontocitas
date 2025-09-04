@@ -116,6 +116,65 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Featured Offers */}
+      <section className="py-16 bg-muted/50">
+        <div className="container mx-auto px-4 md:px-6">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold font-headline mb-4">Ofertas Destacadas</h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto">
+              Servicios dentales de calidad a precios accesibles
+            </p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {getOffers().slice(0, 4).map((offer) => {
+              const student = getStudents().find(s => s.id === offer.studentId);
+              return (
+                <Card key={offer.id} className="hover:shadow-lg transition-shadow">
+                  <CardContent className="p-6">
+                    <div className="flex justify-between items-start mb-3">
+                      <Badge variant="outline" className="text-xs">
+                        {offer.category}
+                      </Badge>
+                      <div className="text-right">
+                        <div className="text-2xl font-bold text-primary">${offer.price}</div>
+                        <div className="text-xs text-muted-foreground">USD</div>
+                      </div>
+                    </div>
+                    <h3 className="font-semibold text-lg mb-2 line-clamp-2">{offer.title}</h3>
+                    <p className="text-sm text-muted-foreground mb-4 line-clamp-3">
+                      {offer.description}
+                    </p>
+                    {student && (
+                      <div className="flex items-center mb-4">
+                        <img 
+                          src={student.avatarUrl} 
+                          alt={student.name}
+                          className="w-8 h-8 rounded-full object-cover mr-2"
+                        />
+                        <div>
+                          <div className="text-sm font-medium">{student.name}</div>
+                          <div className="text-xs text-muted-foreground">{student.location}</div>
+                        </div>
+                      </div>
+                    )}
+                    <Button asChild className="w-full" size="sm">
+                      <Link href={`/offers/${offer.id}`}>
+                        Ver Detalles
+                      </Link>
+                    </Button>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
+          <div className="text-center mt-8">
+            <Button asChild variant="outline" size="lg">
+              <Link href="/offers">Ver Todas las Ofertas</Link>
+            </Button>
+          </div>
+        </div>
+      </section>
+
       {/* How it Works */}
       <section className="py-16 bg-muted/50">
         <div className="container mx-auto px-4 md:px-6">
