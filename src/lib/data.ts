@@ -48,7 +48,7 @@ let students: Student[] = [
     skills: ['Preventative Care', 'Dental Cleanings', 'Patient Education', 'Digital X-Rays'],
     location: 'New York, NY',
     rating: 4.7,
-    status: 'approved',
+    status: 'approved' as const,
     gallery: [
         { url: 'https://picsum.photos/800/600?random=11', description: 'Our modern and clean treatment room.' },
         { url: 'https://picsum.photos/800/600?random=12', description: 'State-of-the-art dental equipment.' },
@@ -64,7 +64,7 @@ let students: Student[] = [
     skills: ['Pediatric Dentistry', 'Teeth Whitening', 'Veneers', 'Cosmetic Bonding'],
     location: 'Los Angeles, CA',
     rating: 4.8,
-    status: 'approved',
+    status: 'approved' as const,
   },
   {
     id: '3',
@@ -76,7 +76,7 @@ let students: Student[] = [
     skills: ['Restorative Dentistry', 'Endodontics (Root Canals)', 'Crowns & Bridges', 'Fillings'],
     location: 'Chicago, IL',
     rating: 4.2,
-    status: 'pending',
+    status: 'pending' as const,
   },
   {
     id: '4',
@@ -88,7 +88,7 @@ let students: Student[] = [
     skills: ['Orthodontics', 'Periodontics', 'Braces', 'Invisalign'],
     location: 'Houston, TX',
     rating: 5.0,
-    status: 'pending',
+    status: 'pending' as const,
   },
   {
     id: '5',
@@ -100,7 +100,7 @@ let students: Student[] = [
     skills: ['General Dentistry', 'Patient Care', 'Oral Hygiene'],
     location: 'New York, NY',
     rating: 0,
-    status: 'pending',
+    status: 'pending' as const,
   },
 ].map(student => ({
   ...student,
