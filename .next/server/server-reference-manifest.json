@@ -1,28 +1,5 @@
 {
-  "node": {
-    "60c63ba7ea295970b3c15e16bd4ca2fcc3bce26f9f": {
-      "workers": {
-        "app/admin/page": {
-          "moduleId": "[project]/.next-internal/server/app/admin/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/lib/email.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
-          "async": false
-        }
-      },
-      "layer": {
-        "app/admin/page": "action-browser"
-      }
-    },
-    "7018d9869b4a2f519887266d75ec1bb8bdbc1b7cbf": {
-      "workers": {
-        "app/offers/[id]/page": {
-          "moduleId": "[project]/.next-internal/server/app/offers/[id]/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/lib/email.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
-          "async": false
-        }
-      },
-      "layer": {
-        "app/offers/[id]/page": "action-browser"
-      }
-    }
-  },
+  "node": {},
   "edge": {},
-  "encryptionKey": "LIM2mZwNHjow+oQrk1yyJGxsn/HkQ/2gcGDsvAkfKAw="
+  "encryptionKey": "LqI8SvjHA6r+3HqGhDPUN6WLuLR6iuHQ+FWttiekYhU="
 }
