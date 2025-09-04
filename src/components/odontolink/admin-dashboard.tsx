@@ -23,7 +23,7 @@ import { MoreHorizontal, CheckCircle, XCircle, Trash2, Loader2 } from 'lucide-re
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import Link from 'next/link';
 import { sendProfileApprovedEmail } from '@/lib/email';
-import { getUserByStudentId } from '@/lib/data';
+import { getUserByStudentId, updateStudentStatus, deleteStudent } from '@/lib/data';
 
 
 interface AdminDashboardProps {
@@ -37,22 +37,26 @@ export function AdminDashboard({ initialStudents }: AdminDashboardProps) {
 
   const handleStatusChange = async (studentId: string, status: Student['status']) => {
     setIsUpdating(studentId);
-    // In a real app, you'd make an API call here.
+    // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 500)); 
 
     const student = students.find(s => s.id === studentId);
     if (status === 'approved' && student) {
         const user = getUserByStudentId(student.id);
-        // NOTE: In a real app, you would have the student's real email address.
-        // For this demo, we'll send it to a placeholder.
+        // Send approval email (in demo, goes to placeholder)
         await sendProfileApprovedEmail(student.name, 'octavioriv02@gmail.com');
     }
 
+    // Update in global data store
+    updateStudentStatus(studentId, status);
+
+    // Update local component state
     setStudents(prevStudents =>
       prevStudents.map(student =>
         student.id === studentId ? { ...student, status } : student
       )
     );
+    
     toast({
       title: 'Perfil Actualizado',
       description: `El perfil del estudiante ha sido ${status === 'approved' ? 'aprobado' : 'rechazado'}.`,
@@ -61,13 +65,24 @@ export function AdminDashboard({ initialStudents }: AdminDashboardProps) {
   };
 
   const handleDelete = (studentId: string) => {
-    // In a real app, you'd make an API call here.
-    setStudents(prevStudents => prevStudents.filter(student => student.id !== studentId));
-    toast({
-      title: 'Perfil Eliminado',
-      description: 'El perfil del estudiante ha sido eliminado.',
-      variant: 'destructive',
-    });
+    // Delete from global data store
+    const deleted = deleteStudent(studentId);
+    
+    if (deleted) {
+      // Update local component state
+      setStudents(prevStudents => prevStudents.filter(student => student.id !== studentId));
+      toast({
+        title: 'Perfil Eliminado',
+        description: 'El perfil del estudiante ha sido eliminado completamente.',
+        variant: 'destructive',
+      });
+    } else {
+      toast({
+        title: 'Error',
+        description: 'No se pudo eliminar el perfil del estudiante.',
+        variant: 'destructive',
+      });
+    }
   };
 
   const statusVariant = (status: Student['status']) => {

@@ -11,6 +11,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, Trash2 } from 'lucide-react';
 import Link from 'next/link';
+import { addStudent } from '@/lib/data';
+import { useRouter } from 'next/navigation';
 
 const profileSchema = z.object({
   name: z.string().min(2, "El nombre es demasiado corto"),
@@ -27,6 +29,7 @@ const profileSchema = z.object({
 
 export default function CreateProfilePage() {
   const { toast } = useToast();
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof profileSchema>>({
     resolver: zodResolver(profileSchema),
@@ -46,29 +49,45 @@ export default function CreateProfilePage() {
   });
 
   async function onSubmit(values: z.infer<typeof profileSchema>) {
-    // In a real app, you would handle file uploads and send URLs to your backend.
+    // Simulate processing time
     await new Promise(resolve => setTimeout(resolve, 1000));
-    const { avatar, gallery, ...rest } = values;
-    const submittedData = {
+    
+    const { avatar, gallery, skills, ...rest } = values;
+    
+    // Prepare student data
+    const studentData = {
         ...rest,
-        avatarUrl: `https://picsum.photos/400/400?random=${Math.floor(Math.random() * 100)}`, // Placeholder
+        avatarUrl: `https://picsum.photos/400/400?random=${Math.floor(Math.random() * 100)}`, // Placeholder for demo
+        skills: skills.split(',').map(skill => skill.trim()), // Convert comma-separated string to array
         gallery: gallery?.map((item, index) => ({
-            url: `https://picsum.photos/800/600?random=${Math.floor(Math.random() * 100) + index}`, // Placeholder
+            url: `https://picsum.photos/800/600?random=${Math.floor(Math.random() * 100) + index}`, // Placeholder for demo
             description: item.description,
-        })),
+        })) || [],
     };
 
-    console.log(submittedData);
-    toast({
-      title: "¡Perfil Creado!",
-      description: "Tu perfil está ahora activo. Ya puedes añadir ofertas.",
-      action: (
-        <Button asChild variant="secondary">
-            <Link href="/offers/create">Crear Oferta</Link>
-        </Button>
-      )
-    });
-    form.reset();
+    try {
+      // Add the student to the system with "pending" status
+      const newStudent = addStudent(studentData);
+      
+      toast({
+        title: "¡Perfil Enviado!",
+        description: "Tu perfil ha sido enviado para revisión. Recibirás una notificación cuando sea aprobado.",
+      });
+      
+      form.reset();
+      
+      // Redirect to home page after successful submission
+      setTimeout(() => {
+        router.push('/');
+      }, 2000);
+      
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Hubo un problema al crear tu perfil. Por favor, inténtalo de nuevo.",
+        variant: "destructive"
+      });
+    }
   }
   
   const avatarFileRef = form.register("avatar");
